@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat JavaScript FullStack</title>
+ 
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body> 
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-light bg-dark ">
+        <a class="navbar-brand mx-auto text-white ">Chat JavaScript FullStack</a>
+    </nav>
+
+    <!-- LOGIN -->
+    <div class="card col-md-4 mt-5 mx-auto" id="nickWrap">
+        <div class="card-header">
+            <h3>Ingrese su nombre de usuario:</h3>
+        </div>
+        <p id="nickError"></p>
+        <div class="card-body">
+            <form id="nickForm">
+                <input type="text" id="nickname" class="form-control" required minlength="2"
+                    placeholder="Nombre Usuario..." autocomplete="off">
+                <button type="submit" class="btn btn-dark mt-2 w-100">
+                    <i class="fa-solid fa-location-arrow text-danger"></i> Enviar   
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="container" id="contentWrap" style="display:none;">
+        <div class="row mt-2">
+            <!-- CHAT -->
+            <div class="col-md-7 offset-md-1 mt-4">
+                <div class="card">
+                    <div class="card-header text-white bg-dark"><h4>Estamos Chateando</h4></div>
+                    <div id="chat" class="card-body" style="height:300px; overflow-y:auto;"></div>
+                    <form id="message-form" class="card-footer">
+                        <div class="input-group">
+                            <input type="text" id="message" class="form-control" placeholder="Escribe tu mensaje...">
+                            <button type="submit" class="btn btn-dark">
+                                <i class="fa-solid fa-location-arrow text-danger"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- USUARIOS -->
+            <div class="col-md-3 mt-4">
+                <div class="card">
+                    <div class="card-header bg-dark text-white"><h5>Usuarios</h5></div>
+                    <div class="card-body "><div id="usernames"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

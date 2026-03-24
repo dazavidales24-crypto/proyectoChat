@@ -1,0 +1,23 @@
+body {
+    background: #373B44;  
+    background: linear-gradient(to right, #f02222, #262729);
+    color: #fff;
+}
+
+.mensaje-propio {
+    font-weight: bold;
+}
+
+.notificacion {
+    color: #ccc;
+    font-style: italic;
+}
+
+.error{
+    color: #f02222;
+}
+
+.whisper {
+    color: gray;
+    font-style: italic;
+}

@@ -51,7 +51,12 @@ $(function(){
 
         const msg = $messageBox.val().trim();
 
-        if(!msg) return;
+        if(!msg){
+            console.log("Mensaje vacío");
+            return;
+        }
+
+        console.log("Enviando:", msg);
 
         socket.emit('enviar mensaje', msg, data => {
             if(data){
@@ -64,6 +69,8 @@ $(function(){
 
     // MENSAJES NUEVOS
     socket.on('new-message', data => {
+        console.log("Mensaje recibido:", data);
+
         $chat.append(`
             <p>
                 <b style="color:${data.color}">${data.nick}:</b> ${data.msg}

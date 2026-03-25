@@ -15,17 +15,17 @@ module.exports = function(io){
     }
 
     io.on('connection', async (socket) => {
-        console.log('Nuevo usuario conectado');
+        console.log('Usuario conectado');
 
         // CARGAR MENSAJES
         try {
             const messages = await Chat.find({}).sort({ created_at: 1 });
             socket.emit('Cargando viejos mensajes', messages);
         } catch (error) {
-            console.error(error);
+            console.log('Error cargando mensajes:', error);
         }
 
-        // NUEVO USUARIO
+        // LOGIN
         socket.on('nuevo usuario', (data, cb) => {
             const nickname = data.trim();
 
@@ -35,17 +35,20 @@ module.exports = function(io){
 
             socket.nickname = nickname;
             users[nickname] = socket;
-
             userColors[nickname] = getColor();
+
+            console.log('Usuario registrado:', nickname);
 
             cb(true);
 
-            io.sockets.emit('notificacion', `${nickname} se ha unido`);
+            io.emit('notificacion', `${nickname} se ha unido`);
             updateNicknames();
         });
 
         // ENVIAR MENSAJE
         socket.on('enviar mensaje', async (data, cb) => {
+
+            console.log("Mensaje recibido:", data);
 
             if (!socket.nickname) {
                 return cb('Debes ingresar un nombre');
@@ -57,6 +60,7 @@ module.exports = function(io){
                 return cb('Mensaje vacío');
             }
 
+            // PRIVADO
             if (msg.startsWith('/w ')){
                 msg = msg.substring(3);
                 const index = msg.indexOf(' ');
@@ -65,7 +69,7 @@ module.exports = function(io){
                     const name = msg.substring(0, index);
                     const mensaje = msg.substring(index + 1);
 
-                    if (name in users){
+                    if (users[name]){
 
                         users[name].emit('whisper', {
                             msg: mensaje,
@@ -85,23 +89,24 @@ module.exports = function(io){
                 }
 
             } else {
+
+                // GUARDAR EN DB (pero NO bloquear si falla)
                 try {
                     const newMsg = new Chat({
                         nick: socket.nickname,
                         msg: msg
                     });
-
                     await newMsg.save();
-
-                    io.sockets.emit('new-message', {
-                        nick: socket.nickname,
-                        msg: msg,
-                        color: userColors[socket.nickname] || '#000'
-                    });
-
                 } catch (error) {
-                    console.error(error);
+                    console.log("Error guardando:", error);
                 }
+
+                //SIEMPRE ENVÍA EL MENSAJE
+                io.emit('new-message', {
+                    nick: socket.nickname,
+                    msg: msg,
+                    color: userColors[socket.nickname] || '#000'
+                });
             }
         });
 
@@ -109,7 +114,7 @@ module.exports = function(io){
         socket.on('disconnect', () => {
             if (!socket.nickname) return;
 
-            io.sockets.emit('notificacion', `${socket.nickname} salió`);
+            io.emit('notificacion', `${socket.nickname} salió`);
 
             delete users[socket.nickname];
             delete userColors[socket.nickname];
@@ -118,7 +123,7 @@ module.exports = function(io){
         });
 
         function updateNicknames(){
-            io.sockets.emit('usernames', Object.keys(users));
+            io.emit('usernames', Object.keys(users));
         }
 
     });

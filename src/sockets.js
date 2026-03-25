@@ -29,7 +29,7 @@ module.exports = function(io){
         socket.on('nuevo usuario', (data, cb) => {
             const nickname = data.trim();
 
-            if (!nickname || nickname in users){
+            if (!nickname || nickname.length < 2 || users[nickname]){
                 return cb(false);
             }
 
@@ -57,7 +57,6 @@ module.exports = function(io){
                 return cb('Mensaje vacío');
             }
 
-            // PRIVADO
             if (msg.startsWith('/w ')){
                 msg = msg.substring(3);
                 const index = msg.indexOf(' ');

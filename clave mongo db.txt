@@ -1,3 +1,6 @@
 dazavidales24_db_user   USERNAME
 
 6hfHM8Qyq960i5Sz   CONTRASEÑA
+
+
+mongodb+srv://dazavidales24_db_user:NKMqakLDFT2ms5mc@cluster0.xsxgwew.mongodb.net/?appName=Cluster0

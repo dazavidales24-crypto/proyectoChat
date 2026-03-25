@@ -14,11 +14,26 @@ $(function(){
     const $contentWrap = $('#contentWrap');
     const $nickWrap = $('#nickWrap');
 
+    let enviando = false;
+
     // LOGIN
     $nickForm.submit(e => {
         e.preventDefault();
 
-        socket.emit('nuevo usuario', $nickname.val(), data => {
+        if(enviando) return;
+        enviando = true;
+
+        const nick = $nickname.val().trim();
+
+        if(nick.length < 2){
+            $nickError.html('<div class="alert alert-danger">Nombre muy corto</div>');
+            enviando = false;
+            return;
+        }
+
+        socket.emit('nuevo usuario', nick, data => {
+            enviando = false;
+
             if(data){
                 $nickWrap.hide();
                 $contentWrap.show();
@@ -34,7 +49,11 @@ $(function(){
     $messageForm.submit(e => {
         e.preventDefault();
 
-        socket.emit('enviar mensaje', $messageBox.val(), data => {
+        const msg = $messageBox.val().trim();
+
+        if(!msg) return;
+
+        socket.emit('enviar mensaje', msg, data => {
             if(data){
                 $chat.append(`<p class="error">${data}</p>`);
             }

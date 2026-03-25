@@ -27,24 +27,34 @@ module.exports = function(io){
 
         // LOGIN
         socket.on('nuevo usuario', (data, cb) => {
-            const nickname = data.trim();
 
-            if (!nickname || nickname.length < 2 || users[nickname]){
-                return cb(false);
-            }
+    console.log("Intento de login:", data);
 
-            socket.nickname = nickname;
-            users[nickname] = socket;
-            userColors[nickname] = getColor();
+    if(!data) return cb(false);
 
-            console.log('Usuario registrado:', nickname);
+    const nickname = data.trim();
 
-            cb(true);
+    if (nickname.length < 2){
+        console.log("Nombre muy corto");
+        return cb(false);
+    }
 
-            io.emit('notificacion', `${nickname} se ha unido`);
-            updateNicknames();
-        });
+    if (users[nickname]){
+        console.log("Usuario ya existe");
+        return cb(false);
+    }
 
+    socket.nickname = nickname;
+    users[nickname] = socket;
+    userColors[nickname] = getColor();
+
+    console.log("Usuario aceptado:", nickname);
+
+    cb(true); 
+
+    io.emit('notificacion', `${nickname} se ha unido`);
+    updateNicknames();
+});
         // ENVIAR MENSAJE
         socket.on('enviar mensaje', async (data, cb) => {
 

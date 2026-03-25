@@ -18,33 +18,31 @@ $(function(){
 
     // LOGIN
     $nickForm.submit(e => {
-        e.preventDefault();
+    e.preventDefault();
 
-        if(enviando) return;
-        enviando = true;
+    const nick = $nickname.val().trim();
 
-        const nick = $nickname.val().trim();
+    console.log("Enviando nick:", nick);
 
-        if(nick.length < 2){
-            $nickError.html('<div class="alert alert-danger">Nombre muy corto</div>');
-            enviando = false;
-            return;
+    if(nick.length < 2){
+        $nickError.html('<div class="alert alert-danger">Nombre muy corto</div>');
+        return;
+    }
+
+    socket.emit('nuevo usuario', nick, (data) => {
+
+        console.log("Respuesta servidor:", data);
+
+        if(data === true){
+            $nickWrap.hide();
+            $contentWrap.show();
+        } else {
+            $nickError.html('<div class="alert alert-danger">Usuario inválido o ya existe</div>');
         }
-
-        socket.emit('nuevo usuario', nick, data => {
-            enviando = false;
-
-            if(data){
-                $nickWrap.hide();
-                $contentWrap.show();
-            } else {
-                $nickError.html('<div class="alert alert-danger">Usuario ya existe</div>');
-            }
-        });
-
-        $nickname.val('');
     });
 
+    $nickname.val('');
+});
     // ENVIAR MENSAJE
     $messageForm.submit(e => {
         e.preventDefault();
